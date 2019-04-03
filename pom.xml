@@ -14,7 +14,7 @@
         <java.version>1.8</java.version>
     </properties>
 
-    <name>mongo-shaman</name>
+    <name>mongo-shaman-core</name>
     <description>An opensource project for mongodb change management</description>
     <url>http://github.com/antoniovizuete/mongo-shaman</url>
 

@@ -1,8 +1,8 @@
 package io.github.mongoshaman.core.configuration;
 
-import java.util.Optional;
-
 import io.github.mongoshaman.core.exceptions.ShamanPropertiesException;
+
+import java.util.Optional;
 
 /**
  * Shaman properties.
@@ -47,9 +47,13 @@ public enum ShamanProperties {
    *
    * @return the value
    */
-  public String getValue() {
+  public String getNullSafeValue() {
     return Optional.ofNullable(System.getProperty(this.key, this.defaultValue))
         .orElseThrow(() -> new ShamanPropertiesException(this.key + " is not specified"));
+  }
+
+  public String getValue() {
+    return System.getProperty(this.key, this.defaultValue);
   }
 
 }

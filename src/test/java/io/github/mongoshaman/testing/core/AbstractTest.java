@@ -65,9 +65,9 @@ public abstract class AbstractTest {
 
   protected MongoDatabase getDatabase() {
     final MongoCollection<Document> collection =
-      mongoClient.getDatabase(ShamanProperties.DATABASE_NAME.getValue()).getCollection("shaman");
+      mongoClient.getDatabase(ShamanProperties.DATABASE_NAME.getNullSafeValue()).getCollection("shaman");
 
-    return mongoClient.getDatabase(ShamanProperties.DATABASE_NAME.getValue());
+    return mongoClient.getDatabase(ShamanProperties.DATABASE_NAME.getNullSafeValue());
   }
 
   protected List<Document> getInternalCollectionDocuments() {
@@ -75,7 +75,7 @@ public abstract class AbstractTest {
   }
 
   protected MongoCollection<Document> getInternalCollection() {
-    return getCollection(ShamanProperties.COLLECTION_NAME.getValue());
+    return getCollection(ShamanProperties.COLLECTION_NAME.getNullSafeValue());
   }
 
   protected MongoCollection<Document> getCollection(final String collectionName) {

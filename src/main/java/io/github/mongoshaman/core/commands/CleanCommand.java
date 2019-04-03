@@ -1,15 +1,10 @@
 package io.github.mongoshaman.core.commands;
 
-import static io.github.mongoshaman.core.helpers.LoggingHelper.debug;
-import static io.github.mongoshaman.core.helpers.LoggingHelper.trace;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.mongodb.client.MongoClient;
-
 import io.github.mongoshaman.core.configuration.ShamanConfiguration;
 import io.github.mongoshaman.core.repositories.ShamanRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CleanCommand implements Command {
 

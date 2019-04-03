@@ -1,19 +1,19 @@
 package io.github.mongoshaman.core;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
+import io.github.mongoshaman.core.configuration.ShamanClassicConfiguration;
 import io.github.mongoshaman.core.configuration.ShamanConfiguration;
 import io.github.mongoshaman.core.configuration.ShamanProperties;
 import io.github.mongoshaman.core.exceptions.ShamanExecutionException;
 import io.github.mongoshaman.core.exceptions.ShamanMigrationException;
 import io.github.mongoshaman.core.exceptions.ShamanPropertiesException;
 import io.github.mongoshaman.testing.core.AbstractTest;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class ShamanTest extends AbstractTest {
@@ -27,7 +27,7 @@ public class ShamanTest extends AbstractTest {
   public void migrate() {
     // Arrange
     System.setProperty(ShamanProperties.LOCATION.getKey(), "db/migration/");
-    ShamanConfiguration.refresh();
+    ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
 
     // Act
@@ -52,7 +52,7 @@ public class ShamanTest extends AbstractTest {
   public void migrate_wrongLocation() {
     // Arrange
     System.setProperty(ShamanProperties.LOCATION.getKey(), "fake-path");
-    ShamanConfiguration.refresh();
+    ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
     shaman.clean();
 
@@ -67,7 +67,7 @@ public class ShamanTest extends AbstractTest {
   public void migrate_emptyLocation() {
     // Arrange
     System.setProperty(ShamanProperties.LOCATION.getKey(), "db/empty/");
-    ShamanConfiguration.refresh();
+    ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
     shaman.clean();
 
@@ -82,7 +82,7 @@ public class ShamanTest extends AbstractTest {
   public void migrate_alreadyExecuted() {
     // Arrange
     System.clearProperty(ShamanProperties.LOCATION.getKey());
-    ShamanConfiguration.refresh();
+    ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
     shaman.clean();
     shaman.migrate();
@@ -98,7 +98,7 @@ public class ShamanTest extends AbstractTest {
   public void shamanInstantiation_null_databaseName() {
     // Arrange
     System.clearProperty(ShamanProperties.DATABASE_NAME.getKey());
-    ShamanConfiguration.refresh();
+    ShamanClassicConfiguration.refresh();
 
     // Act
     ShamanFactory.getInstance(mongoClient).clean();
@@ -109,7 +109,7 @@ public class ShamanTest extends AbstractTest {
   public void migrate_wrongStatement() {
     // Arrange
     System.setProperty(ShamanProperties.LOCATION.getKey(), "db/migration-wrong-statement/");
-    ShamanConfiguration.refresh();
+    ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
     shaman.clean();
 
@@ -158,7 +158,7 @@ public class ShamanTest extends AbstractTest {
   @Test
   public void constructor2() {
     // Arrange
-    ShamanConfiguration configuration = ShamanConfiguration.readConfiguration();
+    ShamanConfiguration configuration = ShamanClassicConfiguration.readConfiguration();
 
     // Act
     Shaman shaman = new Shaman(mongoClient, configuration);
@@ -169,7 +169,7 @@ public class ShamanTest extends AbstractTest {
 
   private void launchSuccessCleanAndMigrate() {
     System.clearProperty(ShamanProperties.LOCATION.getKey());
-    ShamanConfiguration.refresh();
+    ShamanClassicConfiguration.refresh();
     Shaman shaman = ShamanFactory.getInstance(mongoClient);
     shaman.clean();
     shaman.migrate();
@@ -177,7 +177,7 @@ public class ShamanTest extends AbstractTest {
 
   private ShamanMigrationException testMigrationExceptions(String s) {
     System.setProperty(ShamanProperties.LOCATION.getKey(), s);
-    ShamanConfiguration.refresh();
+    ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
     ShamanMigrationException exception = null;
 

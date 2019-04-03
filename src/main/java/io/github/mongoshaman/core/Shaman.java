@@ -1,9 +1,9 @@
 package io.github.mongoshaman.core;
 
 import com.mongodb.client.MongoClient;
-
 import io.github.mongoshaman.core.commands.CleanCommand;
 import io.github.mongoshaman.core.commands.MigrateCommand;
+import io.github.mongoshaman.core.configuration.ShamanClassicConfiguration;
 import io.github.mongoshaman.core.configuration.ShamanConfiguration;
 
 /**
@@ -22,7 +22,7 @@ public class Shaman {
 
   Shaman(final MongoClient mongoClient) {
     this.mongoClient = mongoClient;
-    configuration = ShamanConfiguration.readConfiguration();
+    configuration = ShamanClassicConfiguration.readConfiguration();
   }
 
   Shaman(final MongoClient mongoClient, ShamanConfiguration configuration) {
