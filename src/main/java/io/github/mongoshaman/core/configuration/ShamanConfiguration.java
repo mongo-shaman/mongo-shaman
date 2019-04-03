@@ -29,7 +29,7 @@ public class ShamanConfiguration {
     singleton = null;
   }
 
-  public static ShamanConfiguration get() {
+  public static ShamanConfiguration readConfiguration() {
     if(Objects.isNull(singleton)) {
       singleton = new ShamanConfiguration();
     }

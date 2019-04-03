@@ -155,6 +155,18 @@ public class ShamanTest extends AbstractTest {
         exception.getMessage().contains("There's an incoherence between migration files and database"));
   }
 
+  @Test
+  public void constructor2() {
+    // Arrange
+    ShamanConfiguration configuration = ShamanConfiguration.readConfiguration();
+
+    // Act
+    Shaman shaman = new Shaman(mongoClient, configuration);
+
+    // Assert
+    assertNotNull("Unexpected null", shaman);
+  }
+
   private void launchSuccessCleanAndMigrate() {
     System.clearProperty(ShamanProperties.LOCATION.getKey());
     ShamanConfiguration.refresh();
@@ -179,5 +191,5 @@ public class ShamanTest extends AbstractTest {
     assertNotNull("Unexpected null exception", exception);
     return exception;
   }
-  
+
 }
