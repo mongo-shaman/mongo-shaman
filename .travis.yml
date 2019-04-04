@@ -1,3 +1,10 @@
 language: java
 after_success:
   - mvn clean test jacoco:report coveralls:report
+addons:
+  sonarcloud:
+    organization: "mongo-shaman_mongo-shaman-core"
+    token:
+      secure: ${SONAR_TOKEN} # encrypted value of your token
+script:
+  - sonar-scanner
