@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Assert;
@@ -94,7 +95,7 @@ public abstract class AbstractTest {
     final URL systemResource = ClassLoader.getSystemResource(s);
     System.out.println(systemResource.toString());
     String location = systemResource.toString();
-    location = location.substring(location.indexOf(":") + 2);
+    location = location.substring(location.indexOf(':') + (SystemUtils.IS_OS_WINDOWS ? 2 : 1));
     System.setProperty(ShamanProperties.LOCATION, location);
   }
 }
