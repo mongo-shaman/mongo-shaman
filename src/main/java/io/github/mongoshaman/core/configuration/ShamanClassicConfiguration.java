@@ -20,9 +20,9 @@ public class ShamanClassicConfiguration implements ShamanConfiguration {
 
   /** Instantiates a new Shaman configuration. */
   private ShamanClassicConfiguration() {
-    this.databaseName = ShamanProperties.DATABASE_NAME.getNullSafeValue();
-    this.collectionName = ShamanProperties.COLLECTION_NAME.getNullSafeValue();
-    this.location = ShamanProperties.LOCATION.getNullSafeValue();
+    this.databaseName = ShamanDefaultProperties.DATABASE_NAME.getValue();
+    this.collectionName = ShamanDefaultProperties.COLLECTION_NAME.getValue();
+    this.location = ShamanDefaultProperties.LOCATION.getValue();
   }
 
   public static void refresh() {

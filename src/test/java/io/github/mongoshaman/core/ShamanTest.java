@@ -1,19 +1,23 @@
 package io.github.mongoshaman.core;
 
-import io.github.mongoshaman.core.configuration.ShamanClassicConfiguration;
-import io.github.mongoshaman.core.configuration.ShamanConfiguration;
-import io.github.mongoshaman.core.configuration.ShamanProperties;
-import io.github.mongoshaman.core.exceptions.ShamanExecutionException;
-import io.github.mongoshaman.core.exceptions.ShamanMigrationException;
-import io.github.mongoshaman.core.exceptions.ShamanPropertiesException;
-import io.github.mongoshaman.testing.core.AbstractTest;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.net.URISyntaxException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import io.github.mongoshaman.core.configuration.ShamanClassicConfiguration;
+import io.github.mongoshaman.core.configuration.ShamanConfiguration;
+import io.github.mongoshaman.core.configuration.ShamanDefaultProperties;
+import io.github.mongoshaman.core.configuration.ShamanProperties;
+import io.github.mongoshaman.core.exceptions.ShamanExecutionException;
+import io.github.mongoshaman.core.exceptions.ShamanMigrationException;
+import io.github.mongoshaman.core.exceptions.ShamanPropertiesException;
+import io.github.mongoshaman.testing.core.AbstractTest;
 
 @RunWith(JUnit4.class)
 public class ShamanTest extends AbstractTest {
@@ -26,9 +30,11 @@ public class ShamanTest extends AbstractTest {
   @Test
   public void migrate() {
     // Arrange
-    System.setProperty(ShamanProperties.LOCATION.getKey(), "db/migration/");
+    System.clearProperty(ShamanProperties.LOCATION);
+    setLocation(ShamanDefaultProperties.LOCATION.getValue());
     ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
+    shaman.clean();
 
     // Act
     shaman.migrate();
@@ -51,7 +57,7 @@ public class ShamanTest extends AbstractTest {
   @Test(expected = ShamanPropertiesException.class)
   public void migrate_wrongLocation() {
     // Arrange
-    System.setProperty(ShamanProperties.LOCATION.getKey(), "fake-path");
+    System.setProperty(ShamanDefaultProperties.LOCATION.getKey(), "fake-path");
     ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
     shaman.clean();
@@ -66,7 +72,7 @@ public class ShamanTest extends AbstractTest {
   @Test
   public void migrate_emptyLocation() {
     // Arrange
-    System.setProperty(ShamanProperties.LOCATION.getKey(), "db/empty/");
+    setLocation("db/empty/");
     ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
     shaman.clean();
@@ -79,9 +85,9 @@ public class ShamanTest extends AbstractTest {
   }
 
   @Test
-  public void migrate_alreadyExecuted() {
+  public void migrate_alreadyExecuted() throws URISyntaxException {
     // Arrange
-    System.clearProperty(ShamanProperties.LOCATION.getKey());
+    setLocation(ShamanDefaultProperties.LOCATION.getValue());
     ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
     shaman.clean();
@@ -94,10 +100,10 @@ public class ShamanTest extends AbstractTest {
     assertInternalDocuments(3);
   }
 
-  @Test(expected = ShamanPropertiesException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void shamanInstantiation_null_databaseName() {
     // Arrange
-    System.clearProperty(ShamanProperties.DATABASE_NAME.getKey());
+    System.setProperty(ShamanProperties.DATABASE_NAME, "");
     ShamanClassicConfiguration.refresh();
 
     // Act
@@ -108,7 +114,7 @@ public class ShamanTest extends AbstractTest {
   @Test(expected = ShamanExecutionException.class)
   public void migrate_wrongStatement() {
     // Arrange
-    System.setProperty(ShamanProperties.LOCATION.getKey(), "db/migration-wrong-statement/");
+    setLocation("db/migration-wrong-statement/");
     ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
     shaman.clean();
@@ -168,7 +174,8 @@ public class ShamanTest extends AbstractTest {
   }
 
   private void launchSuccessCleanAndMigrate() {
-    System.clearProperty(ShamanProperties.LOCATION.getKey());
+    System.clearProperty(ShamanProperties.LOCATION);
+    setLocation(ShamanDefaultProperties.LOCATION.getValue());
     ShamanClassicConfiguration.refresh();
     Shaman shaman = ShamanFactory.getInstance(mongoClient);
     shaman.clean();
@@ -176,7 +183,7 @@ public class ShamanTest extends AbstractTest {
   }
 
   private ShamanMigrationException testMigrationExceptions(String s) {
-    System.setProperty(ShamanProperties.LOCATION.getKey(), s);
+    setLocation(s);
     ShamanClassicConfiguration.refresh();
     final Shaman shaman = ShamanFactory.getInstance(mongoClient);
     ShamanMigrationException exception = null;

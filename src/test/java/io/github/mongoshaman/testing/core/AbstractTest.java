@@ -1,9 +1,18 @@
 package io.github.mongoshaman.testing.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bson.Document;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -12,14 +21,8 @@ import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import io.github.mongoshaman.core.configuration.ShamanDefaultProperties;
 import io.github.mongoshaman.core.configuration.ShamanProperties;
-import org.bson.Document;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class AbstractTest {
   private static final String DB_NAME = "shaman-test";
@@ -60,14 +63,14 @@ public abstract class AbstractTest {
   }
 
   protected static void setDatabaseNameProperty() {
-    System.setProperty(ShamanProperties.DATABASE_NAME.getKey(), DB_NAME);
+    System.setProperty(ShamanDefaultProperties.DATABASE_NAME.getKey(), DB_NAME);
   }
 
   protected MongoDatabase getDatabase() {
     final MongoCollection<Document> collection =
-      mongoClient.getDatabase(ShamanProperties.DATABASE_NAME.getNullSafeValue()).getCollection("shaman");
+      mongoClient.getDatabase(ShamanDefaultProperties.DATABASE_NAME.getValue()).getCollection("shaman");
 
-    return mongoClient.getDatabase(ShamanProperties.DATABASE_NAME.getNullSafeValue());
+    return mongoClient.getDatabase(ShamanDefaultProperties.DATABASE_NAME.getValue());
   }
 
   protected List<Document> getInternalCollectionDocuments() {
@@ -75,7 +78,7 @@ public abstract class AbstractTest {
   }
 
   protected MongoCollection<Document> getInternalCollection() {
-    return getCollection(ShamanProperties.COLLECTION_NAME.getNullSafeValue());
+    return getCollection(ShamanDefaultProperties.COLLECTION_NAME.getValue());
   }
 
   protected MongoCollection<Document> getCollection(final String collectionName) {
@@ -84,5 +87,11 @@ public abstract class AbstractTest {
 
   protected void assertInternalDocuments(int i) {
     Assert.assertEquals("Unexpected documents count", i, getInternalCollectionDocuments().size());
+  }
+
+  protected void setLocation(String s) {
+    String location = ClassLoader.getSystemResource(s).toString();
+    location = location.substring(location.indexOf(":") + 2);
+    System.setProperty(ShamanProperties.LOCATION, location);
   }
 }

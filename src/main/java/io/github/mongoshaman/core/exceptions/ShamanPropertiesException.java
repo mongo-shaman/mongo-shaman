@@ -1,14 +1,14 @@
 package io.github.mongoshaman.core.exceptions;
 
-import io.github.mongoshaman.core.configuration.ShamanProperties;
+import io.github.mongoshaman.core.configuration.ShamanDefaultProperties;
 
 public class ShamanPropertiesException extends ShamanException {
 
-  public ShamanPropertiesException(ShamanProperties property) {
+  public ShamanPropertiesException(ShamanDefaultProperties property) {
     super(getFormattedMessage(property));
   }
 
-  public ShamanPropertiesException(ShamanProperties property, Throwable cause) {
+  public ShamanPropertiesException(ShamanDefaultProperties property, Throwable cause) {
     super(getFormattedMessage(property), cause);
   }
 
@@ -16,7 +16,7 @@ public class ShamanPropertiesException extends ShamanException {
     super(message);
   }
 
-  private static String getFormattedMessage(ShamanProperties property) {
+  private static String getFormattedMessage(ShamanDefaultProperties property) {
     return String.format("Wrong %s property", property.getKey());
   }
 }

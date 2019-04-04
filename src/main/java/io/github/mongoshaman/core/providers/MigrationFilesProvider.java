@@ -1,29 +1,27 @@
 package io.github.mongoshaman.core.providers;
 
-import io.github.mongoshaman.core.configuration.ShamanProperties;
-import io.github.mongoshaman.core.domain.MigrationFile;
-import io.github.mongoshaman.core.exceptions.ShamanPropertiesException;
-import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static io.github.mongoshaman.core.helpers.LoggingHelper.trace;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.github.mongoshaman.core.helpers.LoggingHelper.trace;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.github.mongoshaman.core.configuration.ShamanDefaultProperties;
+import io.github.mongoshaman.core.domain.MigrationFile;
+import io.github.mongoshaman.core.exceptions.ShamanPropertiesException;
 
 public class MigrationFilesProvider {
 
@@ -39,14 +37,7 @@ public class MigrationFilesProvider {
   }
 
   public Set<MigrationFile> get() {
-    final URL url = ClassLoader.getSystemResource(location);
-
-    if (Objects.isNull(url)) {
-      trace(log, MSG_NO_MIGRATION_FILES);
-      throw new ShamanPropertiesException(ShamanProperties.LOCATION);
-    }
-
-    try (final Stream<Path> paths = Files.walk(Paths.get(url.toURI()))) {
+    try (final Stream<Path> paths = Files.walk(Paths.get(location))) {
       final AtomicInteger atomicInteger = new AtomicInteger(0);
       final Set<MigrationFile> files = paths.filter(Files::isRegularFile).map(InternalMigrationFile::new)
           .filter(file -> file.getFile().canRead()).filter(file -> file.getFile().getName().endsWith(EXTENSION_JS))
@@ -60,8 +51,8 @@ public class MigrationFilesProvider {
       }
       trace(log, "Files found: ", files.stream().map(MigrationFile::getName).collect(Collectors.joining(", ")));
       return files;
-    } catch (URISyntaxException | IOException e) {
-      throw new ShamanPropertiesException(ShamanProperties.LOCATION, e);
+    } catch (IOException e) {
+      throw new ShamanPropertiesException(ShamanDefaultProperties.LOCATION, e);
     }
   }
 
