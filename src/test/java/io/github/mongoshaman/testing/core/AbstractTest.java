@@ -1,5 +1,6 @@
 package io.github.mongoshaman.testing.core;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +91,9 @@ public abstract class AbstractTest {
   }
 
   protected void setLocation(String s) {
-    String location = ClassLoader.getSystemResource(s).toString();
+    final URL systemResource = ClassLoader.getSystemResource(s);
+    System.out.println(systemResource.toString());
+    String location = systemResource.toString();
     location = location.substring(location.indexOf(":") + 2);
     System.setProperty(ShamanProperties.LOCATION, location);
   }
