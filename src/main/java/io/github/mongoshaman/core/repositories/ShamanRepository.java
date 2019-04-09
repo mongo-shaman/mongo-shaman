@@ -1,19 +1,15 @@
 package io.github.mongoshaman.core.repositories;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.UpdateOptions;
-import io.github.mongoshaman.core.configuration.ShamanConfiguration;
-import io.github.mongoshaman.core.domain.Execution;
-import io.github.mongoshaman.core.domain.MigrationFile;
-import io.github.mongoshaman.core.domain.meta.MigrationFileMeta;
-import io.github.mongoshaman.core.domain.statuses.MigrationStatus;
-import org.apache.commons.collections4.CollectionUtils;
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.pushEach;
+import static com.mongodb.client.model.Updates.set;
+import static io.github.mongoshaman.core.domain.meta.MigrationFileMeta.CHECKSUM;
+import static io.github.mongoshaman.core.domain.meta.MigrationFileMeta.CONTENT;
+import static io.github.mongoshaman.core.domain.meta.MigrationFileMeta.NAME;
+import static io.github.mongoshaman.core.domain.meta.MigrationFileMeta.ORDER;
+import static io.github.mongoshaman.core.domain.meta.MigrationFileMeta.STATUS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,14 +22,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.pushEach;
-import static com.mongodb.client.model.Updates.set;
-import static io.github.mongoshaman.core.domain.meta.MigrationFileMeta.*;
+import org.apache.commons.collections4.CollectionUtils;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.print.attribute.standard.MediaSize.NA;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.UpdateOptions;
+
+import io.github.mongoshaman.core.configuration.ShamanConfiguration;
+import io.github.mongoshaman.core.domain.Execution;
+import io.github.mongoshaman.core.domain.MigrationFile;
+import io.github.mongoshaman.core.domain.statuses.MigrationStatus;
 
 public class ShamanRepository {
 

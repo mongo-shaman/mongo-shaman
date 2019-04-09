@@ -77,7 +77,7 @@ public class MigrationFilesProvider {
       try {
         return String.join("\n", Files.readAllLines(path, Charset.defaultCharset()));
       } catch (IOException e) {
-        log.error("Error reading file {}", path.toUri().toString());
+        log.error("Error reading file {}", path.toUri());
         return null;
       }
     }
