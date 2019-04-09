@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/mongo-shaman/mongo-shaman-core.svg?branch=master)](https://travis-ci.org/mongo-shaman/mongo-shaman-core)
 [![Coverage Status](https://coveralls.io/repos/github/mongo-shaman/mongo-shaman-core/badge.svg?branch=master)](https://coveralls.io/github/mongo-shaman/mongo-shaman-core?branch=master)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=io.github.mongo-shaman:mongo-shaman-core&metric=alert_status)](https://sonarcloud.io/dashboard/index/io.github.mongo-shaman:mongo-shaman-core)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Java](https://img.shields.io/badge/java%20version-8-green.svg)](https://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html)
 [![MongoDb](https://img.shields.io/badge/mongo%20server%20version-4-green.svg)](https://docs.mongodb.com/v4.0/)
