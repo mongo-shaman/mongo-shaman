@@ -39,7 +39,7 @@ public class MigrationFilesProvider {
   public Set<MigrationFile> get() {
     try (final Stream<Path> paths = Files.walk(Paths.get(location))) {
       final AtomicInteger atomicInteger = new AtomicInteger(0);
-      final Set<MigrationFile> files = paths.filter(Files::isRegularFile).map(InternalMigrationFile::new)
+      final Set<MigrationFile> files = paths.filter(path -> path.toFile().isFile()).map(InternalMigrationFile::new)
           .filter(file -> file.getFile().canRead()).filter(file -> file.getFile().getName().endsWith(EXTENSION_JS))
           .sorted(Comparator.comparing(file -> file.getFile().getName()))
           .map(file -> new MigrationFile(atomicInteger.getAndAdd(1), file.getFile().getName(), file.getContent()))
@@ -77,7 +77,7 @@ public class MigrationFilesProvider {
       try {
         return String.join("\n", Files.readAllLines(path, Charset.defaultCharset()));
       } catch (IOException e) {
-        log.error("Error reading file", path.toUri().toString());
+        log.error("Error reading file {}", path.toUri().toString());
         return null;
       }
     }

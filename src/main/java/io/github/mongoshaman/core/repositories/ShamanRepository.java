@@ -7,6 +7,7 @@ import com.mongodb.client.model.UpdateOptions;
 import io.github.mongoshaman.core.configuration.ShamanConfiguration;
 import io.github.mongoshaman.core.domain.Execution;
 import io.github.mongoshaman.core.domain.MigrationFile;
+import io.github.mongoshaman.core.domain.meta.MigrationFileMeta;
 import io.github.mongoshaman.core.domain.statuses.MigrationStatus;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bson.Document;
@@ -30,6 +31,9 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.pushEach;
 import static com.mongodb.client.model.Updates.set;
+import static io.github.mongoshaman.core.domain.meta.MigrationFileMeta.*;
+
+import javax.print.attribute.standard.MediaSize.NA;
 
 public class ShamanRepository {
 
@@ -48,7 +52,7 @@ public class ShamanRepository {
     if (StreamSupport.stream(mongoDatabase.listCollectionNames().spliterator(), false)
         .noneMatch(collectionName::equals)) {
       mongoDatabase.createCollection(collectionName);
-      traceCollectionCreation();
+      traceCollectionCreation(collectionName);
     }
     return mongoDatabase.getCollection(collectionName);
   }
@@ -73,7 +77,7 @@ public class ShamanRepository {
   }
 
   public void updateStatus(final MigrationFile file, final MigrationStatus status) {
-    collection.updateOne(filterByName(file), set("status", status.name()));
+    collection.updateOne(filterByName(file), set(STATUS, status.name()));
   }
 
   public void updateExecutionStatus(final Execution execution) {
@@ -89,26 +93,26 @@ public class ShamanRepository {
   }
 
   private List<Bson> migrationFileToUpdateBson(final MigrationFile file) {
-    return Arrays.asList(set("name", file.getName()), set("order", file.getOrder()), set("content", file.getContent()),
-        set("checksum", file.getChecksum()), set("status", file.getStatus().name()),
+    return Arrays.asList(set(NAME, file.getName()), set(ORDER, file.getOrder()), set(CONTENT, file.getContent()),
+        set(CHECKSUM, file.getChecksum()), set(STATUS, file.getStatus().name()),
         pushEach("executions",
             file.getExecutions().stream()
                 .map(execution -> new Document().append("number", execution.getStatement().getLineNumber())
-                    .append("code", execution.getStatement().getCode()).append("status", execution.getStatus().name()))
+                    .append("code", execution.getStatement().getCode()).append(STATUS, execution.getStatus().name()))
                 .collect(Collectors.toList())));
   }
 
   private Bson filterByName(MigrationFile migrationFile) {
-    return eq("name", migrationFile.getName());
+    return eq(NAME, migrationFile.getName());
   }
 
   private MigrationFile documentToMigrationFile(final Document document) {
     final MigrationFile migrationFile = new MigrationFile();
-    migrationFile.setName((String) document.get("name"));
-    migrationFile.setOrder((Integer) document.get("order"));
-    migrationFile.setContent((String) document.get("content"));
-    migrationFile.setChecksum((String) document.get("checksum"));
-    migrationFile.setStatus(MigrationStatus.valueOf((String) document.get("status")));
+    migrationFile.setName((String) document.get(NAME));
+    migrationFile.setOrder((Integer) document.get(ORDER));
+    migrationFile.setContent((String) document.get(CONTENT));
+    migrationFile.setChecksum((String) document.get(CHECKSUM));
+    migrationFile.setStatus(MigrationStatus.valueOf((String) document.get(STATUS)));
 
     return migrationFile;
   }
@@ -130,9 +134,9 @@ public class ShamanRepository {
     }
   }
 
-  private void traceCollectionCreation() {
+  private void traceCollectionCreation(String collectionName) {
     if (log.isTraceEnabled()) {
-      log.trace("{} collection has been created");
+      log.trace("{} collection has been created", collectionName);
     }
   }
 }

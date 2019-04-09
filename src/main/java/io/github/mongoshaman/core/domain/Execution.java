@@ -2,8 +2,6 @@ package io.github.mongoshaman.core.domain;
 
 import io.github.mongoshaman.core.domain.statuses.ExecutionStatus;
 
-import java.util.Objects;
-
 public class Execution {
 
   private MigrationFile file;
